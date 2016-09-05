@@ -1,0 +1,27 @@
+{
+  "name": "generator-redbeard",
+  "version": "0.0.0",
+  "description": "Yoman generator for redbeard apps",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Prismatik/generator-redbeard.git"
+  },
+  "keywords": [
+    "yoman",
+    "generator",
+    "redbeard"
+  ],
+  "author": "Nikolay Nemshilov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Prismatik/generator-redbeard/issues"
+  },
+  "homepage": "https://github.com/Prismatik/generator-redbeard#readme",
+  "dependencies": {
+    "yeoman-generator": "^0.24.1"
+  }
+}
