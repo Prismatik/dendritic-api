@@ -11,12 +11,18 @@ module.exports = generators.Base.extend({
   },
 
   writing: function() {
-    this.fs.copyTpl(
-      this.templatePath('**/*'),
-      this.destinationPath(''),
-      {
-        appName: this.appname
-      }
-    );
+    ['**/*', '.*'].forEach(name => {
+      this.fs.copyTpl(
+        this.templatePath(name),
+        this.destinationPath(''),
+        {
+          appName: this.appname
+        }
+      );
+    });
+  },
+
+  install: function() {
+    this.npmInstall();
   }
 });
