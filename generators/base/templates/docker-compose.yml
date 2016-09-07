@@ -1,0 +1,16 @@
+<%= appName %>:
+  build: .
+  volumes:
+    - .:/app
+    - /app/node_modules
+  environment:
+    JWT_SECRET: Ba(0/\/
+    RETHINKDB_URL: rethinkdb
+    PORT: 3005
+  ports:
+    - 3005:3005
+  links:
+    - rethinkdb
+
+rethinkdb:
+  image: rethinkdb:latest
