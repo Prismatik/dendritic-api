@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const app = require('../src/app');
+const app = require('../src/index');
 const server = require('http').createServer(app);
 const log = require('../src/utils/logger');
 const { PORT } = require('../config');
@@ -9,7 +9,7 @@ if (app.io) { app.io.listen(server); }
 
 server.listen(PORT, () => {
   const { address, port } = server.address();
-  log.info('{{camelCase}} API listening at http://%s:%s', address, port);
+  log.info('<%= appName %> API listening at http://%s:%s', address, port);
 });
 
 process.on('unhandledRejection', (reason, p) => {

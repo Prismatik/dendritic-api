@@ -5,7 +5,7 @@
     - /app/node_modules
   environment:
     JWT_SECRET: Ba(0/\/
-    RETHINKDB_URL: rethinkdb
+    RETHINKDB_URL: rethinkdb://rethinkdb:28015/<%= appName %>
     PORT: 3005
   ports:
     - 3005:3005

@@ -1,12 +1,12 @@
 const generators = require('yeoman-generator');
-const { kebabCase } = require('lodash');
+const { snakeCase } = require('lodash');
 
 module.exports = generators.Base.extend({
   constructor: function() {
     generators.Base.apply(this, arguments);
 
     this.argument('appname', { type: String, required: true });
-    this.appname = kebabCase(this.appname);
+    this.appname = snakeCase(this.appname);
     this.destinationRoot(`${process.cwd()}/${this.appname}`);
   },
 
@@ -20,6 +20,11 @@ module.exports = generators.Base.extend({
         }
       );
     });
+
+    this.fs.copy(
+      this.templatePath('.env.example'),
+      this.destinationPath('.env')
+    );
   },
 
   install: function() {

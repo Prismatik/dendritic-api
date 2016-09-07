@@ -4,7 +4,7 @@
   "description": "Yoman generator for redbeard apps",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "test/in-docker.sh"
   },
   "repository": {
     "type": "git",

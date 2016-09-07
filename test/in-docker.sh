@@ -1,10 +1,11 @@
-rm -rf redbeard-test
-yo redbeard redbeard-test --skip-install
+echo "> yo redbeard redbeard_test"
+rm -rf redbeard_test
+yo redbeard redbeard_test --skip-install
 
-pushd ./redbeard-test
+pushd ./redbeard_test
 
-docker-compose run redbeard-test npm test
-docker-compose down
+docker-compose run redbeard_test npm test
+# docker-compose down
 
 popd
-rm -rf redbeard-test
+rm -rf redbeard_test
