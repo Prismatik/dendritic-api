@@ -1,6 +1,8 @@
 const generators = require('yeoman-generator');
-const { snakeCase, camelCase } = require('lodash');
+const { snakeCase, camelCase, startCase, kebabCase } = require('lodash');
 const pluralize = require('pluralize');
+
+const pascalCase = str => startCase(str).replace(/\s+/g, '');
 
 module.exports = generators.Base.extend({
   constructor: function() {
@@ -17,12 +19,19 @@ module.exports = generators.Base.extend({
       snakeCasePlural: this.pluralName,
       camelCase: camelCase(this.singularName),
       camelCasePlural: camelCase(this.pluralName),
+      pascalCase: pascalCase(this.singularName),
+      pascalCasePlural: pascalCase(this.pluralName),
+      kebabCase: kebabCase(this.singularName),
+      kebabCasePlural: kebabCase(this.pluralName),
       singularRelationships: false,
       multiRelationships: false
     };
 
     const mapping = {
-      'config/schemas/schema.json': `config/schemas/${this.singularName}.json`
+      'config/schemas/schema.json': `config/schemas/${this.singularName}.json`,
+      'src/controllers/controller.js': `src/controllers/${this.pluralName}.js`,
+      'src/routes/route.js': `src/routes/${this.pluralName}.js`,
+      'src/models/model.js': `src/models/${this.singularName}.js`
     };
 
     for (const templateName in mapping) {
@@ -32,5 +41,10 @@ module.exports = generators.Base.extend({
         params
       );
     }
+
+    this.fs.copy(
+      this.templatePath('src/utils'),
+      this.destinationPath('src/utils')
+    );
   }
 });

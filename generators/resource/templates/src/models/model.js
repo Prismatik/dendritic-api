@@ -1,6 +1,6 @@
 const model = require('../utils/model');
 
-module.exports = model.create('{{camelCase}}');
+module.exports = model.create('<%= camelCase %>');
 
 // TODO add your indexes and relationships here
 // https://thinky.io/documentation/api/model/#ensureindex

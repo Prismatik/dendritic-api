@@ -1,15 +1,9 @@
-const { {{pascalCase}} } = require('../models');
+const { User } = require('../models');
 const { createController } = require('../utils/controller');
-{{#isUser}}
 const HttpError = require('standard-http-error');
 const { createToken, hashPassword, verifyPassword } = require('../utils/auth');
-{{/isUser}}
 
-module.exports = createController({{pascalCase}}, {
-  {{^isUser}}
-  // TODO business logic
-  {{/isUser}}
-  {{#isUser}}
+module.exports = createController(User, {
   *create(params) {
     return yield super.create(yield hashPassword(params));
   },
@@ -23,7 +17,7 @@ module.exports = createController({{pascalCase}}, {
   },
 
   *signin(email, pass) {
-    const [user] = yield {{pascalCase}}.filter({ email }).run();
+    const [user] = yield User.filter({ email }).run();
     if (!user) throw new HttpError('UNAUTHORIZED');
 
     const verified = yield verifyPassword(pass, user.password);
@@ -37,5 +31,4 @@ module.exports = createController({{pascalCase}}, {
   signout() {
     return { ok: true };
   }
-  {{/isUser}}
 });

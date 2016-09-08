@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "name": "user",
+  "pluralName": "users",
+  "properties": {
+    "id": {
+      "$ref": "#/definitions/uuid"
+    },
+    "email": {
+      "type": "string",
+      "faker": "name.findName"
+    },
+    "password": {
+      "type": "string"
+    }
+  },
+  "required": ["email"]
+}

@@ -7,9 +7,12 @@ pushd ./redbeard_test
 
 echo "> yo redbeard:auth"
 yo redbeard:auth --skip-install
-# adding the express-jwt dependnecy without installing it
+# adding the auth dependnecies without installing it
 sed "s/\(\(^[ ]*\)\"express\":\s*[^,]*,\)/\1\\
 \2\"express-jwt\": \"^5.0.0\",/" <package.json >package.json.updated
+mv package.json.updated package.json
+sed "s/\(\(^[ ]*\)\"express\":\s*[^,]*,\)/\1\\
+\2\"simple-password\": \"^1.0.1\",/" <package.json >package.json.updated
 mv package.json.updated package.json
 
 echo "> yo redbeard:resource green_apple"

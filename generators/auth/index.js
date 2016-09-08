@@ -9,6 +9,6 @@ module.exports = generators.Base.extend({
   },
 
   install: function() {
-    this.npmInstall(['express-jwt'], { save: true });
+    this.npmInstall(['express-jwt', 'simple-password'], { save: true });
   }
 });
