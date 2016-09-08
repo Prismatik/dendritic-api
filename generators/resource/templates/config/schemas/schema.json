@@ -1,0 +1,47 @@
+{
+  "type": "object",
+  "name": "<%= camelCase %>",
+  "pluralName": "<%= camelCasePlural %>",
+  "properties": {
+    "id": {
+      "$ref": "#/definitions/uuid"
+    },
+    "rev": {
+      "$ref": "#/definitions/uuid"
+    },
+    "name": {
+      "type": "string",
+      "faker": "name.findName"
+    <% if (singularRelationships) { -%>
+    },
+    "<%= camelCase%>Id": {
+      "$ref": "#/definitions/uuid"
+    <% } -%>
+    <% if (multiRelationships) { -%>
+    },
+    "<%= camelCasePlural %>Ids": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/uuid"
+      }
+    <% } -%>
+    }
+  },
+  <% if (multiRelationships || singularRelationships) { -%>
+  "links": [
+    <% if (singularRelationships) { -%>
+    {
+      "rel": "<%= camelCase %>",
+      "href": "/<%= camelCasePlural %>/{<%= camelCase %>Id}"
+    }
+    <% } -%>
+    <% if (multiRelationships) { -%>
+    {
+      "rel": "<%= camelCase %>",
+      "href": "/<%= camelCasePlural %>/{<%= camelCasePlural %>Ids[]}"
+    }
+    <% } -%>
+  ],
+  <% } -%>
+  "required": ["name"]
+}

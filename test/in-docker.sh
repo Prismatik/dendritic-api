@@ -12,6 +12,12 @@ sed "s/\(\(^[ ]*\)\"express\":\s*[^,]*,\)/\1\\
 \2\"express-jwt\": \"^5.0.0\",/" <package.json >package.json.updated
 mv package.json.updated package.json
 
+echo "> yo redbeard:resource green_apple"
+yo redbeard:resource green_apple --skip-install
+
+echo "> yo redbeard:resource CoolBananas"
+yo redbeard:resource CoolBananas --skip-install
+
 docker-compose run redbeard_test npm test
 # docker-compose down
 
