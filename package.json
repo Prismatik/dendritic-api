@@ -1,26 +1,26 @@
 {
-  "name": "generator-redbeard",
+  "name": "generator-dendritic",
   "version": "0.0.0",
-  "description": "Yoman generator for redbeard apps",
+  "description": "Yoman generator for dendritic apps",
   "main": "src/index.js",
   "scripts": {
     "test": "test/in-docker.sh"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Prismatik/generator-redbeard.git"
+    "url": "git+https://github.com/Prismatik/generator-dendritic.git"
   },
   "keywords": [
     "yoman",
     "generator",
-    "redbeard"
+    "dendritic"
   ],
   "author": "Nikolay Nemshilov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Prismatik/generator-redbeard/issues"
+    "url": "https://github.com/Prismatik/generator-dendritic/issues"
   },
-  "homepage": "https://github.com/Prismatik/generator-redbeard#readme",
+  "homepage": "https://github.com/Prismatik/generator-dendritic#readme",
   "dependencies": {
     "lodash": "^4.15.0",
     "pluralize": "^3.0.0",
