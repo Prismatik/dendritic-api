@@ -31,7 +31,12 @@ module.exports = generators.Base.extend({
       'config/schemas/schema.json': `config/schemas/${this.singularName}.json`,
       'src/controllers/controller.js': `src/controllers/${this.pluralName}.js`,
       'src/routes/route.js': `src/routes/${this.pluralName}.js`,
-      'src/models/model.js': `src/models/${this.singularName}.js`
+      'src/models/model.js': `src/models/${this.singularName}.js`,
+
+      'test/utils/model_test.js': 'test/utils/model_test.js',
+      'test/fixtures/fixture.js': `test/fixtures/${this.singularName}.js`,
+      'test/controllers/controller_test.js': `test/controllers/${this.pluralName}_test.js`,
+      'test/routes/route_test.js': `test/routes/${this.pluralName}_test.js`
     };
 
     for (const templateName in mapping) {
