@@ -18,6 +18,10 @@ module.exports = generators.Base.extend({
     params.migrationName = `${params.timestamp}_${params.snakeCase}`;
 
     const mapping = {
+      'bin/migrate': 'bin/migrate',
+      'src/models/migration.js': 'src/models/migration.js',
+      'src/utils/migration.js': 'src/utils/migration.js',
+
       'migrations/migration.js': `migrations/${params.migrationName}.js`,
       'test/migrations/migration_test.js': `test/migrations/${params.migrationName}_test.js`
     };
