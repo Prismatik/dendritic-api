@@ -8,7 +8,7 @@ const serialize = user => {
   return data;
 };
 
-const customRouter = new Router()
+module.exports = createRouter(users, serialize)
   .post('/signin', function *(req, res) {
     const { user, token } = yield users.signin(req.body.email, req.body.password);
     res.json({ token, user: serialize(user) });
@@ -16,10 +16,3 @@ const customRouter = new Router()
   .post('/signout', function *(req, res) {
     res.json(yield users.signout(req.body));
   });
-
-const defaultRouter = createRouter(users, serialize);
-customRouter.socket = defaultRouter.socket;
-
-customRouter.use(defaultRouter);
-
-module.exports = customRouter;
