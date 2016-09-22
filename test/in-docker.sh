@@ -22,6 +22,7 @@ echo "> yo dendritic:resource CoolBananas"
 yo dendritic:resource CoolBananas --skip-install
 
 docker-compose run dendritic_test npm test
+docker-compose run dendritic_test npm run lint
 # docker-compose down
 
 popd
