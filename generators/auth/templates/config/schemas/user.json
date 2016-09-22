@@ -6,13 +6,17 @@
     "id": {
       "$ref": "#/definitions/uuid"
     },
+    "rev": {
+      "$ref": "#/definitions/uuid"
+    },
     "email": {
       "type": "string",
-      "faker": "name.findName"
+      "format": "email",
+      "faker": "internet.email"
     },
     "password": {
       "type": "string"
     }
   },
-  "required": ["email"]
+  "required": ["email", "password"]
 }
