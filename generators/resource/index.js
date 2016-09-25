@@ -33,7 +33,6 @@ module.exports = generators.Base.extend({
       'src/routes/route.js': `src/routes/${this.pluralName}.js`,
       'src/models/model.js': `src/models/${this.singularName}.js`,
 
-      'test/utils/model_test.js': 'test/utils/model_test.js',
       'test/fixtures/fixture.js': `test/fixtures/${this.singularName}.js`,
       'test/controllers/controller_test.js': `test/controllers/${this.pluralName}_test.js`,
       'test/routes/route_test.js': `test/routes/${this.pluralName}_test.js`
@@ -47,9 +46,11 @@ module.exports = generators.Base.extend({
       );
     }
 
-    this.fs.copy(
-      this.templatePath('src/utils'),
-      this.destinationPath('src/utils')
-    );
+    ['src/utils', 'test/utils'].forEach(name => {
+      this.fs.copy(
+        this.templatePath(name),
+        this.destinationPath(name)
+      );
+    });
   }
 });

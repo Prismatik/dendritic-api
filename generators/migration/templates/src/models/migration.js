@@ -3,5 +3,5 @@ const { thinky } = require('../../config');
 module.exports = thinky.createModel('_migrations', {
   hostname: String,
   name: String,
-  d: Date
+  date: Date
 });

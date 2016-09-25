@@ -15,7 +15,7 @@ describe('/users route', () => {
   const sorted = (records, param = 'id') => records
     .sort((a, b) => (a[param] > b[param] ? 1 : -1))
     .map(i => Object.assign({}, i))
-    .map(i => { delete i.password; return i; })
+    .map(i => { delete i.password; return i; });
 
   beforeEach(function *() {
     yield User.delete().execute();
