@@ -6,20 +6,19 @@ const modelSchema = schema.<%= camelCase %>;
 
 exports.Model = <%= pascalCase %>;
 
-exports.data = exports.valid = (params={}) => {
+exports.data = exports.valid = (params = {}) => {
   const data = generate(modelSchema);
 
-  for (let key in params) {
+  Object.keys(params).forEach(key => {
     if (params[key] === undefined) {
       delete data[key];
     } else {
       data[key] = params[key];
     }
-  }
+  });
 
   return data;
-}
-
-exports.record = (params) => {
-  return new <%= pascalCase %>(exports.data(params)).save();
 };
+
+exports.record = params =>
+  new <%= pascalCase %>(exports.data(params)).save();

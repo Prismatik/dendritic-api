@@ -23,7 +23,7 @@ yo dendritic:resource CoolBananas --skip-install
 
 # echo "> yo dendritic:migration TabsToSpaces"
 # yo dendritic:migration TabsToSpaces
-# 
+#
 # docker-compose down
 #
 # echo "> migrate up"
@@ -38,8 +38,8 @@ yo dendritic:resource CoolBananas --skip-install
 echo "> npm test"
 docker-compose run dendritic_test npm test
 
-# echo "> npm run lint"
-# docker-compose run dendritic_test npm run lint
+echo "> npm run lint"
+docker-compose run dendritic_test npm run lint
 
 # docker-compose down
 

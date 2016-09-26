@@ -106,7 +106,7 @@ exports.testStandardControllerFind = (controller, fixture) => {
       try {
         yield controller.find('hack!');
         throw new Error('expected throw DocumentNotFound');
-      } catch(error) {
+      } catch (error) {
         error.must.be.instanceOf(DocumentNotFound);
       }
     });
@@ -119,7 +119,7 @@ exports.testStandardControllerFind = (controller, fixture) => {
 exports.testStandardControllerCreate = (controller, fixture) => {
   describe('.create(data)', () => {
     let validData;
-    beforeEach(() => validData = fixture.data());
+    beforeEach(() => { validData = fixture.data(); });
 
     it('saves valid data and returns a model instance', function *() {
       const record = yield controller.create(validData);
@@ -158,16 +158,17 @@ exports.testStandardControllerUpdate = (controller, fixture) => {
 
     before(function *() {
       record = yield fixture.record();
-      validData = fixture.data({id: undefined, rev: record.rev });
+      validData = fixture.data({ id: undefined, rev: record.rev });
     });
 
     it('updates params when things are good', function *() {
-      const oldId = record.id;
       const result = yield controller.update(record.id, validData);
 
       // must return an updated record
       result.constructor.must.equal(fixture.Model);
-      toObject(result, {rev: null}).must.eql(Object.assign({}, record, validData, {rev: null}));
+      toObject(result, { rev: null }).must.eql(
+        Object.assign({}, record, validData, { rev: null })
+      );
 
       // must update the `rev` with a new stamp
       result.rev.must.not.eql(record.rev);
@@ -198,7 +199,7 @@ exports.testStandardControllerUpdate = (controller, fixture) => {
       try {
         yield controller.update('hack!', validData);
         throw new Error('expected throw DocumentNotFound');
-      } catch(error) {
+      } catch (error) {
         error.must.be.instanceOf(DocumentNotFound);
       }
     });
@@ -215,16 +216,17 @@ exports.testStandardControllerReplace = (controller, fixture) => {
 
     before(function *() {
       record = yield fixture.record();
-      validData = fixture.data({id: undefined, rev: record.rev });
+      validData = fixture.data({ id: undefined, rev: record.rev });
     });
 
     it('updates params when things are good', function *() {
-      const oldId = record.id;
       const result = yield controller.replace(record.id, validData);
 
       // must return an updated record
       result.constructor.must.equal(fixture.Model);
-      toObject(result, {rev: null}).must.eql(Object.assign({}, record, validData, {rev: null}));
+      toObject(result, { rev: null }).must.eql(
+        Object.assign({}, record, validData, { rev: null })
+      );
 
       // must update the `rev` with a new stamp
       result.rev.must.not.eql(record.rev);
@@ -247,7 +249,7 @@ exports.testStandardControllerReplace = (controller, fixture) => {
       try {
         yield controller.replace('hack!', validData);
         throw new Error('expected throw DocumentNotFound');
-      } catch(error) {
+      } catch (error) {
         error.must.be.instanceOf(DocumentNotFound);
       }
     });
@@ -277,7 +279,7 @@ exports.testStandardControllerDelete = (controller, fixture) => {
       try {
         yield controller.delete('hack!');
         throw new Error('expected throw DocumentNotFound');
-      } catch(error) {
+      } catch (error) {
         error.must.be.instanceOf(DocumentNotFound);
       }
     });
