@@ -7,21 +7,24 @@
  * });
  */
 const { thinky: { Errors: { DocumentNotFound, ValidationError } } } = require('../../config');
+const { run, sorted, toObject, UUID_RE } = require('./commons');
 
-const UUID_RE = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
-const toObject = (record, options) => Object.assign({}, record, options);
-const sorted = (records, param = 'id') => records
-  .sort((a, b) => (a[param] > b[param] ? 1 : -1))
-  .map(toObject);
-
-// an all in one test fro the entire RESTful API
-exports.testStandardController = (controller, fixture) => {
-  exports.testStandardControllerList(controller, fixture);
-  exports.testStandardControllerFind(controller, fixture);
-  exports.testStandardControllerCreate(controller, fixture);
-  exports.testStandardControllerUpdate(controller, fixture);
-  exports.testStandardControllerReplace(controller, fixture);
-  exports.testStandardControllerDelete(controller, fixture);
+/**
+ * an all in one test fro the entire RESTful API
+ *
+ * @param {Object} controller
+ * @param {Object} fixture
+ * @return void
+ */
+exports.testStandardController = (...args) => {
+  run(args, {
+    list: exports.testStandardControllerList,
+    find: exports.testStandardControllerFind,
+    create: exports.testStandardControllerCreate,
+    update: exports.testStandardControllerUpdate,
+    replace: exports.testStandardControllerReplace,
+    delete: exports.testStandardControllerDelete
+  });
 };
 
 /**

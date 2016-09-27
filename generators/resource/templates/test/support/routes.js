@@ -2,21 +2,28 @@
  * A set of standard router testing scripts
  */
 const io = require('socket.io-client');
+const { run, sorted, toObject, UUID_RE } = require('./commons');
 
-const UUID_RE = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
-const toObject = (record, options) => Object.assign({}, record, options);
-const sorted = (records, param = 'id') => records
-  .sort((a, b) => (a[param] > b[param] ? 1 : -1))
-  .map(toObject);
-
-exports.testStandardRoute = (app, path, fixture, serialize) => {
-  exports.testStandardRouteIndex(app, path, fixture, serialize);
-  exports.testStandardRouteFetch(app, path, fixture, serialize);
-  exports.testStandardRoutePost(app, path, fixture, serialize);
-  exports.testStandardRoutePut(app, path, fixture, serialize);
-  exports.testStandardRoutePatch(app, path, fixture, serialize);
-  exports.testStandardRouteDelete(app, path, fixture, serialize);
-  exports.testStandardRouteSocket(app, path, fixture, serialize);
+/**
+ * runs all the steps with the given arguments
+ *
+ * @param {Object} app
+ * @param {String} path namespace
+ * @param {Object} fixture
+ * @param {Function} serializer (optional)
+ * @param {Object} options { skip: [...], only: [...] }
+ * @return void
+ */
+exports.testStandardRoute = (...args) => {
+  run(args, {
+    index: exports.testStandardRouteIndex,
+    fetch: exports.testStandardRouteFetch,
+    post: exports.testStandardRoutePost,
+    put: exports.testStandardRoutePut,
+    patch: exports.testStandardRoutePatch,
+    delete: exports.testStandardRouteDelete,
+    socket: exports.testStandardRouteSocket,
+  });
 };
 
 /**
