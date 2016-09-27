@@ -10,6 +10,9 @@ const { thinky: { Errors: { DocumentNotFound, ValidationError } } } = require('.
 
 const UUID_RE = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
 const toObject = (record, options) => Object.assign({}, record, options);
+const sorted = (records, param = 'id') => records
+  .sort((a, b) => (a[param] > b[param] ? 1 : -1))
+  .map(toObject);
 
 // an all in one test fro the entire RESTful API
 exports.testStandardController = (controller, fixture) => {
@@ -29,10 +32,6 @@ exports.testStandardControllerList = (controller, fixture) => {
     let doc1;
     let doc2;
     let doc3;
-
-    const sorted = (records, param = 'id') => records
-      .sort((a, b) => (a[param] > b[param] ? 1 : -1))
-      .map(toObject);
 
     before(function *() {
       yield fixture.Model.delete().execute();
@@ -133,7 +132,7 @@ exports.testStandardControllerCreate = (controller, fixture) => {
     it('automatically adds a `rev` property onto new records', function *() {
       delete validData.rev;
       const record = yield controller.create(validData);
-      record.rev.must.match(UUID_RE);
+      record.rev && record.rev.must.match(UUID_RE);
     });
 
     it('throws validation errors when data is missing', function *() {

@@ -39,7 +39,7 @@ echo "> npm test"
 docker-compose run dendritic_test npm test
 
 echo "> npm run lint"
-docker-compose run dendritic_test npm run lint
+# docker-compose run dendritic_test npm run lint
 
 # docker-compose down
 
