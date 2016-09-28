@@ -18,10 +18,11 @@ exports.run = (originalArgs, steps) => {
   const size = originalArgs.length;
   const last = originalArgs[size - 1];
   const args = originalArgs.slice(0, size - (last.skip || last.only ? 1 : 0));
-  const keys = Object.keys(steps).filter(key =>
-    last.skip ? last.skip.indexOf(key) === -1 :
-    last.only ? last.only.indexOf(key) !== -1 : true
-  );
+  const keys = Object.keys(steps).filter(key => {
+    if (last.skip) return last.skip.indexOf(key) === -1;
+    if (last.only) return last.only.indexOf(key) !== -1;
+    return true;
+  });
 
   keys.forEach(key => steps[key].apply(null, args));
 };
@@ -37,4 +38,4 @@ exports.cleanUpAndMerge = (...args) => {
   });
 
   return result;
-}
+};

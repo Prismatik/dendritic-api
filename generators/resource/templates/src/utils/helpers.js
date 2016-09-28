@@ -7,19 +7,27 @@
  * @param {Object} original data
  * @return {Object} patched data
  */
-exports.nullToUndefined = function convert(value) {
+function convert(value) {
   switch (({}).toString.call(value)) {
     case '[object Object]':
-      const clone = {};
-      Object.keys(value).forEach(key =>
-        clone[key] = convert(value[key])
-      );
-      return clone;
+      return convertObject(value);
     case '[object Array]':
-      return input.map(convert);
+      return value.map(convert);
     case '[object Null]':
       return undefined;
     default:
       return value;
   }
 }
+
+function convertObject(value) {
+  const clone = {};
+
+  Object.keys(value).forEach(key => {
+    clone[key] = convert(value[key]);
+  });
+
+  return clone;
+}
+
+exports.nullToUndefined = convert;

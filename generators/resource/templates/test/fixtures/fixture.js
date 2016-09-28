@@ -5,9 +5,8 @@ const { cleanUpAndMerge } = require('../support/commons');
 
 exports.Model = <%= pascalCase %>;
 
-exports.data = exports.valid = (params = {}) => {
-  return cleanUpAndMerge(generate(schema.<%= camelCase %>), params);
-};
+exports.data = exports.valid = (params = {}) =>
+  cleanUpAndMerge(generate(schema.<%= camelCase %>), params);
 
 exports.record = params =>
   new <%= pascalCase %>(exports.data(params)).save();

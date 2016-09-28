@@ -22,7 +22,7 @@ exports.testStandardRoute = (...args) => {
     put: exports.testStandardRoutePut,
     patch: exports.testStandardRoutePatch,
     delete: exports.testStandardRouteDelete,
-    socket: exports.testStandardRouteSocket,
+    socket: exports.testStandardRouteSocket
   });
 };
 
@@ -134,13 +134,15 @@ exports.testStandardRoutePut = (app, path, fixture, serialize = toObject) => {
 
     beforeEach(function *() {
       record = yield fixture.record();
-      data = fixture.data({id: undefined, rev: record.rev});
+      data = fixture.data({ id: undefined, rev: record.rev });
     });
 
     it('replaces an entire document and returns the updated record back', function *() {
       const response = yield app.put(`${path}/${record.id}`, data);
       response.status.must.eql(200);
-      response.body.must.eql(serialize(Object.assign({}, record, data, { rev: response.body.rev })));
+      response.body.must.eql(serialize(
+        Object.assign({}, record, data, { rev: response.body.rev })
+      ));
 
       // must set a new rev
       response.body.rev.must.not.eql(record.rev);
@@ -187,13 +189,15 @@ exports.testStandardRoutePatch = (app, path, fixture, serialize = toObject) => {
 
     beforeEach(function *() {
       record = yield fixture.record();
-      data = fixture.data({id: undefined, rev: record.rev});
+      data = fixture.data({ id: undefined, rev: record.rev });
     });
 
     it('replaces an entire document and returns the updated record back', function *() {
       const response = yield app.patch(`${path}/${record.id}`, data);
       response.status.must.eql(200);
-      response.body.must.eql(serialize(Object.assign({}, record, data, { rev: response.body.rev })));
+      response.body.must.eql(serialize(
+        Object.assign({}, record, data, { rev: response.body.rev })
+      ));
 
       // must set a new rev
       response.body.rev.must.not.eql(record.rev);
@@ -252,7 +256,7 @@ exports.testStandardRouteDelete = (app, path, fixture, serialize = toObject) => 
   describe('DELETE /:id', () => {
     let record;
 
-    before(function * () {
+    before(function *() {
       record = yield fixture.record();
     });
 
@@ -321,7 +325,7 @@ exports.testStandardRouteSocket = (app, path, fixture, serialize = toObject) => 
 
     it('sends notifications about changed objects', function *() {
       const feed = listenFor('updated'); yield wait(50);
-      const newData = fixture.data({id: undefined, rev: doc1.rev});
+      const newData = fixture.data({ id: undefined, rev: doc1.rev });
       const updatedRecord = yield doc1.merge(newData).save();
       const feedRecord = yield feed;
 

@@ -5,9 +5,8 @@ const { cleanUpAndMerge } = require('../support/commons');
 
 exports.Model = User;
 
-exports.data = exports.valid = (params = {}) => {
-  return cleanUpAndMerge(generate(schema.user), params);
-};
+exports.data = exports.valid = (params = {}) =>
+  cleanUpAndMerge(generate(schema.user), params);
 
 exports.record = params =>
   new User(exports.data(params)).save();

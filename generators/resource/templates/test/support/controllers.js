@@ -8,6 +8,7 @@
  */
 const { thinky: { Errors: { DocumentNotFound, ValidationError } } } = require('../../config');
 const { run, sorted, toObject, UUID_RE } = require('./commons');
+
 const sameThing = record => record; // so one could override it in custom cases
 
 /**
@@ -33,7 +34,7 @@ exports.testStandardController = (...args) => {
 /**
  * Tests the standard `controller#all(query)` functionality
  */
-exports.testStandardControllerList = (controller, fixture, filter = sameThing) => {
+exports.testStandardControllerList = (controller, fixture) => {
   describe('.all(query)', () => {
     let doc1;
     let doc2;
@@ -94,7 +95,7 @@ exports.testStandardControllerList = (controller, fixture, filter = sameThing) =
 /**
  * Tests the individual `controller#find(id)` method
  */
-exports.testStandardControllerFind = (controller, fixture, filter = sameThing) => {
+exports.testStandardControllerFind = (controller, fixture) => {
   describe('.find(id)', () => {
     let record;
 
@@ -139,7 +140,7 @@ exports.testStandardControllerCreate = (controller, fixture, filter = sameThing)
     it('automatically adds a `rev` property onto new records', function *() {
       delete validData.rev;
       const record = yield controller.create(validData);
-      record.rev && record.rev.must.match(UUID_RE);
+      if (record.rev) record.rev.must.match(UUID_RE);
     });
 
     it('throws validation errors when data is missing', function *() {
