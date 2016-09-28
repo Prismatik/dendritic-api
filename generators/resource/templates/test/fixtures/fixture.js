@@ -1,23 +1,12 @@
 const generate = require('json-schema-faker');
 const { schema } = require('../../config');
 const { <%= pascalCase %> } = require('../../src/models');
-
-const modelSchema = schema.<%= camelCase %>;
+const { cleanUpAndMerge } = require('../support/commons');
 
 exports.Model = <%= pascalCase %>;
 
 exports.data = exports.valid = (params = {}) => {
-  const data = generate(modelSchema);
-
-  Object.keys(params).forEach(key => {
-    if (params[key] === undefined) {
-      delete data[key];
-    } else {
-      data[key] = params[key];
-    }
-  });
-
-  return data;
+  return cleanUpAndMerge(generate(schema.<%= camelCase %>), params);
 };
 
 exports.record = params =>

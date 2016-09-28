@@ -1,10 +1,13 @@
 const generate = require('json-schema-faker');
 const { schema } = require('../../config');
+const { User } = require('../../src/models');
+const { cleanUpAndMerge } = require('../support/commons');
 
-const modelSchema = schema.user;
+exports.Model = User;
 
-module.exports = {
-  valid() {
-    return generate(modelSchema);
-  }
+exports.data = exports.valid = (params = {}) => {
+  return cleanUpAndMerge(generate(schema.user), params);
 };
+
+exports.record = params =>
+  new User(exports.data(params)).save();

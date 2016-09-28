@@ -35,17 +35,17 @@ exports.baseController = Model => ({
   },
 
   *create(params) {
-    return yield new Model(params).save();
+    return yield new Model(Object.assign({}, params)).save();
   },
 
   *update(id, params) {
     const record = yield this.find(id);
-    return yield record.update(params);
+    return yield record.update(Object.assign({}, params));
   },
 
   *replace(id, params) {
     const record = yield this.find(id);
-    return yield record.replace(params);
+    return yield record.replace(Object.assign({}, params));
   },
 
   *delete(id) {

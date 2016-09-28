@@ -8,12 +8,15 @@
  */
 const { thinky: { Errors: { DocumentNotFound, ValidationError } } } = require('../../config');
 const { run, sorted, toObject, UUID_RE } = require('./commons');
+const sameThing = record => record; // so one could override it in custom cases
 
 /**
  * an all in one test fro the entire RESTful API
  *
  * @param {Object} controller
  * @param {Object} fixture
+ * @param {Function} filter optional filter to transform data before comparisons
+ * @param {Object} options
  * @return void
  */
 exports.testStandardController = (...args) => {
@@ -30,7 +33,7 @@ exports.testStandardController = (...args) => {
 /**
  * Tests the standard `controller#all(query)` functionality
  */
-exports.testStandardControllerList = (controller, fixture) => {
+exports.testStandardControllerList = (controller, fixture, filter = sameThing) => {
   describe('.all(query)', () => {
     let doc1;
     let doc2;
@@ -91,7 +94,7 @@ exports.testStandardControllerList = (controller, fixture) => {
 /**
  * Tests the individual `controller#find(id)` method
  */
-exports.testStandardControllerFind = (controller, fixture) => {
+exports.testStandardControllerFind = (controller, fixture, filter = sameThing) => {
   describe('.find(id)', () => {
     let record;
 
@@ -118,18 +121,19 @@ exports.testStandardControllerFind = (controller, fixture) => {
 /**
  * The standard `controller.create(params)` method tests
  */
-exports.testStandardControllerCreate = (controller, fixture) => {
+exports.testStandardControllerCreate = (controller, fixture, filter = sameThing) => {
   describe('.create(data)', () => {
     let validData;
-    beforeEach(() => { validData = fixture.data(); });
+    beforeEach(() => { validData = fixture.data({ id: undefined, rev: undefined }); });
 
     it('saves valid data and returns a model instance', function *() {
       const record = yield controller.create(validData);
       record.constructor.must.equal(fixture.Model);
 
       record.id.must.match(UUID_RE);
-
-      toObject(record).must.eql(toObject(validData));
+      toObject(filter(record)).must.eql(toObject(
+        filter(validData), { id: record.id, rev: record.rev }
+      ));
     });
 
     it('automatically adds a `rev` property onto new records', function *() {
@@ -153,7 +157,7 @@ exports.testStandardControllerCreate = (controller, fixture) => {
 /**
  * Tests the standard `controller.update(id, params)` method
  */
-exports.testStandardControllerUpdate = (controller, fixture) => {
+exports.testStandardControllerUpdate = (controller, fixture, filter = sameThing) => {
   describe('.update(id, params)', () => {
     let record;
     let validData;
@@ -168,8 +172,8 @@ exports.testStandardControllerUpdate = (controller, fixture) => {
 
       // must return an updated record
       result.constructor.must.equal(fixture.Model);
-      toObject(result, { rev: null }).must.eql(
-        Object.assign({}, record, validData, { rev: null })
+      toObject(filter(result), { rev: null }).must.eql(
+        filter(Object.assign({}, record, validData, { rev: null }))
       );
 
       // must update the `rev` with a new stamp
@@ -211,7 +215,7 @@ exports.testStandardControllerUpdate = (controller, fixture) => {
 /**
  * Tests the standard `controller.replace(id, data)` functionality
  */
-exports.testStandardControllerReplace = (controller, fixture) => {
+exports.testStandardControllerReplace = (controller, fixture, filter = sameThing) => {
   describe('.replace(id, params)', () => {
     let record;
     let validData;
@@ -226,8 +230,8 @@ exports.testStandardControllerReplace = (controller, fixture) => {
 
       // must return an updated record
       result.constructor.must.equal(fixture.Model);
-      toObject(result, { rev: null }).must.eql(
-        Object.assign({}, record, validData, { rev: null })
+      toObject(filter(result), { rev: null }).must.eql(
+        filter(Object.assign({}, record, validData, { rev: null }))
       );
 
       // must update the `rev` with a new stamp
@@ -261,7 +265,7 @@ exports.testStandardControllerReplace = (controller, fixture) => {
 /**
  * Tests the standard `controller#delete(id)` functionality
  */
-exports.testStandardControllerDelete = (controller, fixture) => {
+exports.testStandardControllerDelete = (controller, fixture, filter = sameThing) => {
   describe('.delete(id)', () => {
     let record;
 
@@ -271,7 +275,7 @@ exports.testStandardControllerDelete = (controller, fixture) => {
 
     it('deletes a document for sure when it exists', function *() {
       const result = yield controller.delete(record.id);
-      toObject(result).must.eql(toObject(record));
+      toObject(filter(result)).must.eql(toObject(filter(record)));
 
       const records = yield record.getModel().filter({ id: record.id }).run();
       records.must.have.length(0);

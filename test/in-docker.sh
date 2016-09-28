@@ -21,8 +21,8 @@ yo dendritic:resource green_apple --skip-install
 echo "> yo dendritic:resource CoolBananas"
 yo dendritic:resource CoolBananas --skip-install
 
-# echo "> yo dendritic:migration TabsToSpaces"
-# yo dendritic:migration TabsToSpaces
+echo "> yo dendritic:migration TabsToSpaces"
+yo dendritic:migration TabsToSpaces
 #
 # docker-compose down
 #

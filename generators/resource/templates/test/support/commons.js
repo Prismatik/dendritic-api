@@ -25,3 +25,16 @@ exports.run = (originalArgs, steps) => {
 
   keys.forEach(key => steps[key].apply(null, args));
 };
+
+// merges objects together and cleans up `undefined` values
+exports.cleanUpAndMerge = (...args) => {
+  const result = Object.assign.apply(null, [{}].concat(args));
+
+  Object.keys(result).forEach(key => {
+    if (result[key] === undefined) {
+      delete result[key];
+    }
+  });
+
+  return result;
+}
