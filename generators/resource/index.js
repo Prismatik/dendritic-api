@@ -8,7 +8,9 @@ module.exports = generators.Base.extend({
   constructor: function() {
     generators.Base.apply(this, arguments);
 
-    this.argument('modelname', { type: String, required: true });
+    this.argument('modelname', { type: String, required: true, desc: 'resource name' });
+    this.option('timestamps', { type: Boolean, defaults: true, desc: "automatically add createdAt/updatedAt properties" });
+
     this.singularName = pluralize(snakeCase(this.modelname), 1);
     this.pluralName = pluralize(this.singularName);
   },
@@ -24,7 +26,8 @@ module.exports = generators.Base.extend({
       kebabCase: kebabCase(this.singularName),
       kebabCasePlural: kebabCase(this.pluralName),
       singularRelationships: false,
-      multiRelationships: false
+      multiRelationships: false,
+      addTimestamps: this.options.timestamps
     };
 
     const mapping = {
