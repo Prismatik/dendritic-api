@@ -41,7 +41,7 @@ docker-compose run dendritic_test npm test
 echo "> npm run lint"
 docker-compose run dendritic_test npm run lint
 
-docker-compose down
+# docker-compose down
 
 popd
 rm -rf dendritic_test

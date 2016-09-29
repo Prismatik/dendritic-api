@@ -46,7 +46,7 @@ module.exports = generators.Base.extend({
       );
     }
 
-    ['src/utils', 'test/utils'].forEach(name => {
+    ['src/utils', 'test/utils', 'test/support'].forEach(name => {
       this.fs.copy(
         this.templatePath(name),
         this.destinationPath(name)
