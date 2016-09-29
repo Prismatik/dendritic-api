@@ -25,6 +25,10 @@ exports.create = (modelName, opts = {}) => {
     exports.setRevLifecycle(Model);
   }
 
+  if (modelSchema.properties.createdAt || modelSchema.properties.updatedAt) {
+    exports.setTimestampsHandling(Model);
+  }
+
   Model.standardQuery = exports.queryBuilder(Model, modelSchema);
   Model.standardFeed = exports.feedBuilder(Model);
 
@@ -38,8 +42,12 @@ exports.create = (modelName, opts = {}) => {
  * @return {Function} thinky compatible validator
  */
 exports.thinkyValidatorFor = (schema) => {
+  const propsClone = Object.assign({}, schema.properties);
+  const schemaClone = Object.assign({}, schema, { properties: propsClone });
+  delete schemaClone.properties.createdAt;
+  delete schemaClone.properties.updatedAt;
   const ajv = new Ajv({ allErrors: true, v5: true });
-  const validate = ajv.compile(schema);
+  const validate = ajv.compile(schemaClone);
   const humanReadableErrors = errors => errors.map(error => {
     const { dataPath, message, keyword, params: { missingProperty } } = error;
     const path = keyword === 'required' ? `${dataPath}.${missingProperty}` : dataPath;
@@ -161,6 +169,24 @@ exports.setRevLifecycle = Model => {
   Model.pre('save', function (next) {
     if (!this.isSaved() && !this.rev) {
       this.rev = uuid.v4();
+    }
+
+    next();
+  });
+};
+
+/**
+ * Sets the automatic `createdAt` and `updatedAt` records handling
+ *
+ * @param {class} thinky model
+ * @return void
+ */
+exports.setTimestampsHandling = Model => {
+  Model.pre('save', function (next) {
+    this.updatedAt = new Date();
+
+    if (!this.createdAt) {
+      this.createdAt = this.updatedAt;
     }
 
     next();

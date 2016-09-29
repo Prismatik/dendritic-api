@@ -23,3 +23,10 @@ process.nextTick(() => {
     );
   });
 });
+
+const timekeeper = require('timekeeper');
+
+process.nextTick(() => {
+  before(() => timekeeper.freeze(new Date()));
+  after(() => timekeeper.reset());
+});

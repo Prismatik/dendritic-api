@@ -18,7 +18,7 @@ mv package.json.updated package.json
 echo "> yo dendritic:resource green_apple"
 yo dendritic:resource green_apple --skip-install
 
-echo "> yo dendritic:resource CoolBananas"
+echo "> yo dendritic:resource CoolBananas --no-timestamps"
 yo dendritic:resource CoolBananas --skip-install --no-timestamps
 
 echo "> yo dendritic:migration TabsToSpaces"

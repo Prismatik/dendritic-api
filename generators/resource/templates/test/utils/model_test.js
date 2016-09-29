@@ -1,4 +1,5 @@
 const uuid = require('uuid');
+const timekeeper = require('timekeeper');
 const model = require('../../src/utils/model');
 const { thinky, schema } = require('../../config');
 
@@ -237,6 +238,62 @@ describe('utils/model', function () {
       } catch (error) {
         error.message.must.contain('`rev` must match pattern');
       }
+    });
+  });
+
+  describe('a model with createdAt/updatedAt properties', () => {
+    const TEST_JSON_SCHEMA = {
+      type: 'object',
+      name: 'timestampsThing',
+      pluralName: 'timestampsThings',
+      properties: {
+        id: {
+          type: 'string',
+          pattern: '^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$'
+        },
+        name: {
+          type: 'string'
+        },
+        createdAt: {
+          type: 'string',
+          format: 'date-time'
+        },
+        updatedAt: {
+          type: 'string',
+          format: 'date-time'
+        }
+      },
+      required: [
+        'name'
+      ]
+    };
+    let Model;
+    let now;
+
+    before(() => {
+      schema.timestampsThing = TEST_JSON_SCHEMA;
+      Model = model.create('timestampsThing');
+      now = new Date();
+    });
+
+    afterEach(() => timekeeper.freeze(now));
+
+    it('automatically populates the created at and updated at timestamps', function *() {
+      const record = yield new Model({ name: 'nikolay!' }).save();
+
+      record.createdAt.must.eql(new Date());
+      record.updatedAt.must.eql(new Date());
+    });
+
+    it('updates the updatedAt and keeps createdAt on existing records', function *() {
+      const record = yield new Model({ name: 'nikolay!' }).save();
+      const tomorrow = new Date(); tomorrow.setDate(now.getDate() + 1);
+
+      timekeeper.freeze(tomorrow);
+      yield record.merge({ name: 'antikolay' }).save();
+
+      record.createdAt.must.eql(now);
+      record.updatedAt.must.eql(tomorrow);
     });
   });
 });
