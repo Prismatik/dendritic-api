@@ -308,7 +308,7 @@ exports.testStandardRouteSocket = (app, path, fixture, serialize = toObject) => 
         fixture.record(),
         fixture.record()
       ];
-      yield wait(50); // waiting for all events to propagate
+      yield wait(100); // waiting for all events to propagate
     });
 
     beforeEach(() => {

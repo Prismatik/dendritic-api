@@ -210,6 +210,11 @@ Object.defineProperty(Document.prototype, 'replace', {
   enumerable: false,
   value(data) {
     const { rev = this.rev } = data || { };
+    const applyHooks = hooks => {
+      for (const hook of hooks) {
+        hook.call(this, () => {});
+      }
+    };
 
     // cleaing up all the existing data
     Object.getOwnPropertyNames(this).forEach(key => key !== 'id' && delete this[key]);
@@ -220,7 +225,10 @@ Object.defineProperty(Document.prototype, 'replace', {
     // NOTE: `validate()` can return a Promise
     return Promise.resolve(this.validate()).then(() => {
       const Model = this.getModel();
-      const { _thinky: { r } } = Model;
+      const { _thinky: { r }, _pre: { save: preSave }, _post: { save: postSave } } = Model;
+
+      applyHooks(preSave);
+
       const newData = Object.assign({ }, this, rev ? { rev: uuid.v4() } : { });
       const REV_MISMATCH_ERROR = '`rev` was changed by another update';
 
@@ -232,6 +240,8 @@ Object.defineProperty(Document.prototype, 'replace', {
         if (result.first_error === REV_MISMATCH_ERROR) {
           throw new thinky.Errors.ValidationError(REV_MISMATCH_ERROR);
         }
+
+        applyHooks(postSave);
 
         return Object.assign(this, newData);
       });
