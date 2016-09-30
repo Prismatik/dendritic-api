@@ -24,7 +24,7 @@ yo dendritic:resource CoolBananas --skip-install --no-timestamps
 echo "> yo dendritic:migration TabsToSpaces"
 yo dendritic:migration TabsToSpaces
 
-# docker-compose down
+docker-compose down
 #
 # echo "> migrate up"
 # docker-compose run dendritic_test bin/migrate up

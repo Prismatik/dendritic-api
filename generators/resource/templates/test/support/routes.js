@@ -2,7 +2,7 @@
  * A set of standard router testing scripts
  */
 const io = require('socket.io-client');
-const { run, sorted, toObject, UUID_RE } = require('./commons');
+const { run, sorted, toObject, UUID_RE, jsonDecode } = require('./commons');
 
 /**
  * runs all the steps with the given arguments
@@ -46,20 +46,20 @@ exports.testStandardRouteIndex = (app, path, fixture, serialize = toObject) => {
     it('returns all records by default', function *() {
       const response = yield app.get(path);
       response.status.must.eql(200);
-      sorted(response.body).must.eql(sorted([doc1, doc2]).map(serialize));
+      sorted(response.body).must.eql(sorted([doc1, doc2]).map(serialize).map(jsonDecode));
     });
 
     it('allows to specify property filters', function *() {
       const response = yield app.get(path, { id: doc1.id });
       response.status.must.eql(200);
-      sorted(response.body).must.eql(sorted([doc1]).map(serialize));
+      sorted(response.body).must.eql(sorted([doc1]).map(serialize).map(jsonDecode));
     });
 
     it('allows to sort data by fields', function *() {
       const response = yield app.get(path, { orderBy: 'rev' });
       response.status.must.eql(200);
       sorted(response.body, 'rev').must.eql(
-        sorted([doc1, doc2], 'rev').map(serialize)
+        sorted([doc1, doc2], 'rev').map(serialize).map(jsonDecode)
       );
     });
 
@@ -68,7 +68,7 @@ exports.testStandardRouteIndex = (app, path, fixture, serialize = toObject) => {
       response.status.must.eql(200);
       response.body.must.eql(sorted(
         [doc1, doc2], 'rev'
-      ).slice(0, 1).map(serialize));
+      ).slice(0, 1).map(serialize).map(jsonDecode));
     });
   });
 };
@@ -87,7 +87,7 @@ exports.testStandardRouteFetch = (app, path, fixture, serialize = toObject) => {
     it('returns the record if exists', function *() {
       const response = yield app.get(`${path}/${record.id}`);
       response.status.must.eql(200);
-      response.body.must.eql(serialize(record));
+      response.body.must.eql(jsonDecode(serialize(record)));
     });
 
     it('throws 404 when the record does not exist', function *() {
@@ -105,11 +105,17 @@ exports.testStandardRoutePost = (app, path, fixture, serialize = toObject) => {
   describe('POST /', () => {
     it('creates new record when data is good', function *() {
       const omits = { id: undefined, rev: undefined };
-      const data = fixture.data(omits);
-      const response = yield app.post(path, data);
-      response.status.must.eql(201);
+      const data = fixture.data(Object.assign({}, omits, { createdAt: undefined }));
+      const timestamps = fixture.schema.properties.createdAt ? {
+        createdAt: new Date(), updatedAt: new Date()
+      } : {};
 
-      toObject(response.body, omits).must.eql(serialize(toObject(data, omits)));
+      const response = yield app.post(path, data);
+
+      response.status.must.eql(201);
+      toObject(response.body, omits).must.eql(
+        jsonDecode(serialize(Object.assign({}, data, omits, timestamps)))
+      );
 
       // must set the new id and rev
       response.body.id.must.match(UUID_RE);
@@ -133,16 +139,20 @@ exports.testStandardRoutePut = (app, path, fixture, serialize = toObject) => {
     let record;
 
     beforeEach(function *() {
-      record = yield fixture.record();
-      data = fixture.data({ id: undefined, rev: record.rev });
+      record = yield fixture.record({ createdAt: undefined });
+      data = fixture.data({ id: undefined, rev: record.rev, createdAt: undefined });
     });
 
     it('replaces an entire document and returns the updated record back', function *() {
       const response = yield app.put(`${path}/${record.id}`, data);
+      const timestamps = fixture.schema.properties.createdAt ? {
+        createdAt: new Date(), updatedAt: new Date()
+      } : {};
+
       response.status.must.eql(200);
-      response.body.must.eql(serialize(
-        Object.assign({}, record, data, { rev: response.body.rev })
-      ));
+      response.body.must.eql(jsonDecode(serialize(
+        Object.assign({}, record, data, { rev: response.body.rev }, timestamps)
+      )));
 
       // must set a new rev
       response.body.rev.must.not.eql(record.rev);
@@ -188,16 +198,19 @@ exports.testStandardRoutePatch = (app, path, fixture, serialize = toObject) => {
     let record;
 
     beforeEach(function *() {
-      record = yield fixture.record();
-      data = fixture.data({ id: undefined, rev: record.rev });
+      record = yield fixture.record({ createdAt: undefined });
+      data = fixture.data({ id: undefined, rev: record.rev, createdAt: undefined });
     });
 
     it('replaces an entire document and returns the updated record back', function *() {
       const response = yield app.patch(`${path}/${record.id}`, data);
+      const timestamps = fixture.schema.properties.createdAt ? {
+        createdAt: new Date(), updatedAt: new Date()
+      } : {};
       response.status.must.eql(200);
-      response.body.must.eql(serialize(
-        Object.assign({}, record, data, { rev: response.body.rev })
-      ));
+      response.body.must.eql(jsonDecode(serialize(
+        Object.assign({}, record, data, { rev: response.body.rev }, timestamps)
+      )));
 
       // must set a new rev
       response.body.rev.must.not.eql(record.rev);
@@ -263,7 +276,7 @@ exports.testStandardRouteDelete = (app, path, fixture, serialize = toObject) => 
     it('deletes a record if it exists', function *() {
       const response = yield app.delete(`${path}/${record.id}`);
       response.status.must.eql(200);
-      response.body.must.eql(serialize(record));
+      response.body.must.eql(jsonDecode(serialize(record)));
     });
 
     it('throws 404 if the record does not exist', function *() {
@@ -291,7 +304,10 @@ exports.testStandardRouteSocket = (app, path, fixture, serialize = toObject) => 
 
     before(function *() {
       yield fixture.Model.delete().execute();
-      [doc1, doc2] = yield [fixture.record(), fixture.record()];
+      [doc1, doc2] = yield [
+        fixture.record(),
+        fixture.record()
+      ];
       yield wait(50); // waiting for all events to propagate
     });
 
@@ -312,15 +328,20 @@ exports.testStandardRouteSocket = (app, path, fixture, serialize = toObject) => 
       client.on('existed', record => records.push(record));
       const result = yield allDone;
       result.must.eql({});
-      sorted(records).must.eql(sorted([doc1, doc2]).map(serialize));
+      sorted(records).must.eql(sorted([doc1, doc2]).map(serialize).map(jsonDecode));
     });
 
     it('sends records through when they are created', function *() {
       const feed = listenFor('created'); yield wait(50);
-      const newRecord = yield fixture.record();
+      const newRecord = yield fixture.record({ createdAt: undefined });
       const feedRecord = yield feed;
+      const timestamps = fixture.schema.properties.createdAt ? {
+        createdAt: new Date(), updatedAt: new Date()
+      } : {};
 
-      feedRecord.must.eql(serialize(newRecord));
+      feedRecord.must.eql(jsonDecode(serialize(
+        Object.assign({}, newRecord, timestamps))
+      ));
     });
 
     it('sends notifications about changed objects', function *() {
@@ -329,7 +350,7 @@ exports.testStandardRouteSocket = (app, path, fixture, serialize = toObject) => 
       const updatedRecord = yield doc1.merge(newData).save();
       const feedRecord = yield feed;
 
-      feedRecord.must.eql(serialize(updatedRecord));
+      feedRecord.must.eql(jsonDecode(serialize(updatedRecord)));
     });
 
     it('sends notifications through when records are deleted', function *() {
@@ -338,7 +359,7 @@ exports.testStandardRouteSocket = (app, path, fixture, serialize = toObject) => 
       yield doc1.delete();
       const feedRecord = yield feed;
 
-      feedRecord.must.eql(serialize(doc1));
+      feedRecord.must.eql(jsonDecode(serialize(doc1)));
     });
   });
 };

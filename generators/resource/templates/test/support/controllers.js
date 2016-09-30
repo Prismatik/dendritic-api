@@ -125,15 +125,22 @@ exports.testStandardControllerFind = (controller, fixture) => {
 exports.testStandardControllerCreate = (controller, fixture, filter = sameThing) => {
   describe('.create(data)', () => {
     let validData;
-    beforeEach(() => { validData = fixture.data({ id: undefined, rev: undefined }); });
+    beforeEach(() => {
+      validData = fixture.data({ id: undefined, rev: undefined, createdAt: undefined });
+    });
 
     it('saves valid data and returns a model instance', function *() {
       const record = yield controller.create(validData);
-      record.constructor.must.equal(fixture.Model);
 
+      record.constructor.must.equal(fixture.Model);
       record.id.must.match(UUID_RE);
+
+      const timestamps = fixture.schema.properties.createdAt ? {
+        createdAt: new Date(), updatedAt: new Date()
+      } : {};
+
       toObject(filter(record)).must.eql(toObject(
-        filter(validData), { id: record.id, rev: record.rev }
+        filter(validData), Object.assign(timestamps, { id: record.id, rev: record.rev })
       ));
     });
 
@@ -164,17 +171,20 @@ exports.testStandardControllerUpdate = (controller, fixture, filter = sameThing)
     let validData;
 
     before(function *() {
-      record = yield fixture.record();
-      validData = fixture.data({ id: undefined, rev: record.rev });
+      record = yield fixture.record({ createdAt: undefined });
+      validData = fixture.data({ id: undefined, rev: record.rev, createdAt: undefined });
     });
 
     it('updates params when things are good', function *() {
       const result = yield controller.update(record.id, validData);
+      const timestamps = fixture.schema.properties.createdAt ? {
+        createdAt: new Date(), updatedAt: new Date()
+      } : {};
 
       // must return an updated record
       result.constructor.must.equal(fixture.Model);
       toObject(filter(result), { rev: null }).must.eql(
-        filter(Object.assign({}, record, validData, { rev: null }))
+        filter(Object.assign({}, record, validData, { rev: null }, timestamps))
       );
 
       // must update the `rev` with a new stamp
@@ -222,17 +232,20 @@ exports.testStandardControllerReplace = (controller, fixture, filter = sameThing
     let validData;
 
     before(function *() {
-      record = yield fixture.record();
-      validData = fixture.data({ id: undefined, rev: record.rev });
+      record = yield fixture.record({ createdAt: undefined });
+      validData = fixture.data({ id: undefined, rev: record.rev, createdAt: undefined });
     });
 
     it('updates params when things are good', function *() {
       const result = yield controller.replace(record.id, validData);
+      const timestamps = fixture.schema.properties.createdAt ? {
+        createdAt: record.createdAt, updatedAt: new Date()
+      } : {};
 
       // must return an updated record
       result.constructor.must.equal(fixture.Model);
       toObject(filter(result), { rev: null }).must.eql(
-        filter(Object.assign({}, record, validData, { rev: null }))
+        filter(Object.assign({}, record, validData, { rev: null }, timestamps))
       );
 
       // must update the `rev` with a new stamp

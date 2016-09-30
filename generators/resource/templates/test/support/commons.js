@@ -8,6 +8,19 @@ exports.UUID_RE = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-
 // converts a thinky record into a plain object, optionally with some overrides
 exports.toObject = (record, options) => Object.assign({}, record, options);
 
+// makes the data comparable with JSON encoded/parsed blobs
+exports.jsonDecode = data => {
+  const clone = Object.assign({}, data);
+
+  Object.keys(clone).forEach(key => {
+    if (clone[key] instanceof Date) {
+      clone[key] = clone[key].toISOString();
+    }
+  });
+
+  return clone;
+};
+
 // sorts a list of records by a key and exports them into a list of plain objects
 exports.sorted = (records, param = 'id') => records
    .sort((a, b) => (a[param] > b[param] ? 1 : -1))
