@@ -1,24 +1,23 @@
 {
-  "name": "dendritic_api",
-  "version": "1.0.0",
+  "name": "dendritic-api",
+  "version": "0.0.0",
   "description": "",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Prismatik/dendritic_api.git"
+    "url": "git+https://github.com/Prismatik/dendritic-api.git"
   },
   "private": true,
   "main": "src/index.js",
   "engines": {
-    "node": "^6.4.0"
+    "node": "^6.7.0"
   },
   "scripts": {
-    "start": "./bin/server",
-    "test": "NODE_ENV=test mocha",
-    "coverage": "NODE_ENV=test istanbul cover _mocha",
-    "dockertest": "docker-compose run dendritic_api npm test",
-    "dockerwatch": "docker-compose run dendritic_api npm run watch",
-    "lint": "eslint src test config",
-    "precommit": "npm run lint"
+    "test": "test mocha",
+    "coverage": "istanbul cover _mocha",
+    "dockertest": "docker-compose run dendritic-api npm test",
+    "lint": "eslint src test",
+    "precommit": "npm run lint",
+    "prepush": "npm run dockertest"
   },
   "license": "ISC",
   "dependencies": {

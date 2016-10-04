@@ -1,10 +1,9 @@
-dendritic_api:
+dendritic-api:
   build: .
   volumes:
     - .:/app
     - /app/node_modules
   environment:
-    JWT_SECRET: Ba(0/\/
     RETHINKDB_URL: rethinkdb://rethinkdb:28015/dendritic_api
     PORT: 3005
   ports:
