@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "name": "greenApple",
+  "pluralName": "greenApples",
+  "properties": {
+    "id": {
+      "$ref": "#/definitions/uuid"
+    },
+    "rev": {
+      "$ref": "#/definitions/uuid"
+    },
+    "name": {
+      "type": "string",
+      "faker": "name.findName"
+    },
+    "createdAt": {
+      "$ref": "#/definitions/date-time"
+    },
+    "updatedAt": {
+      "$ref": "#/definitions/date-time"
+    }
+  },
+  "required": ["name"]
+}
