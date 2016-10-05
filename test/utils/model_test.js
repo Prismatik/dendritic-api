@@ -1,6 +1,6 @@
 const uuid = require('uuid');
 const timekeeper = require('timekeeper');
-const model = require('../../src/utils/model');
+const { Model: model } = require('../../src');
 const { thinky, schema } = require('../../config');
 
 describe('utils/model', function () {

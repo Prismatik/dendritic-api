@@ -12,7 +12,7 @@
     "node": "^6.7.0"
   },
   "scripts": {
-    "test": "test mocha",
+    "test": "mocha",
     "coverage": "istanbul cover _mocha",
     "dockertest": "docker-compose run dendritic-api npm test",
     "lint": "eslint src test",
