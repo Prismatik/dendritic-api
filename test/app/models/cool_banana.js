@@ -1,4 +1,4 @@
-const model = require('../utils/model');
+const { model } = require('../../../src');
 
 module.exports = model.create('coolBanana');
 

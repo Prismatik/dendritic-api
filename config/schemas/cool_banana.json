@@ -1,7 +1,7 @@
 {
   "type": "object",
-  "name": "greenApple",
-  "pluralName": "greenApples",
+  "name": "coolBanana",
+  "pluralName": "coolBananas",
   "properties": {
     "id": {
       "$ref": "#/definitions/uuid"

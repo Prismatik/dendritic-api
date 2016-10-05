@@ -1,6 +1,6 @@
 const generate = require('json-schema-faker');
 const { schema } = require('../../config');
-const { CoolBanana } = require('../../src/models');
+const { CoolBanana } = require('../app/models');
 const { cleanUpAndMerge } = require('../support/commons');
 
 exports.Model = CoolBanana;

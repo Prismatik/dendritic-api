@@ -5,8 +5,8 @@
  * @param {Object} extra methods
  * @return {Object} controller
  */
-exports.createController = (Model, subController) => {
-  const baseController = exports.baseController(Model);
+exports.create = (Model, subController) => {
+  const baseController = exports.buildBase(Model);
   Object.setPrototypeOf(subController, baseController);
   return subController;
 };
@@ -17,7 +17,7 @@ exports.createController = (Model, subController) => {
  * @param {Class} model
  * @return {Object} base controller generator
  */
-exports.baseController = Model => ({
+exports.buildBase = Model => ({
   *all(params) {
     return yield Model.standardQuery(params).run();
   },

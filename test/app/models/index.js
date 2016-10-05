@@ -1,6 +1,6 @@
-const util = require('../utils/module');
+const { slurp } = require('../../../src');
 
-const models = util.slurp('src/models');
+const models = slurp('test/app/models');
 
 // making all the models to be exported pacal cased
 Object.keys(models).forEach(key => {

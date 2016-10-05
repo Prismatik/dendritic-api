@@ -35,7 +35,7 @@
     "thinky": "^2.3.7",
     "uuid": "^2.0.3"
   },
-  "peerDependencies": {
+  "devDependencies": {
     "bandname": "^1.0.0",
     "co-mocha": "^1.1.3",
     "doubleagent": "^1.0.2",

@@ -1,3 +1,9 @@
+const model = require('./utils/model');
+const controller = require('./utils/controller');
+const { slurp } = require('./utils/module');
+
 Object.assign(exports, {
-  Model: require('./utils/model')
+  model,
+  controller,
+  slurp
 });
