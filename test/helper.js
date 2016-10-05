@@ -23,3 +23,10 @@ process.nextTick(() => {
     );
   });
 });
+
+const app = require('./app');
+const doubleagent = require('doubleagent');
+
+exports.app = doubleagent(app);
+
+if (app.io) { app.io.attach(exports.app.server); }

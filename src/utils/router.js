@@ -3,7 +3,7 @@ const { nullToUndefined } = require('./helpers');
 
 const defaultSerializer = record => Object.assign({}, record);
 
-exports.createRouter = (controller, serialize = defaultSerializer) => {
+exports.create = (controller, serialize = defaultSerializer) => {
   const router = new Router()
     .get('', function *(req, res) {
       const list = yield controller.all(req.query);

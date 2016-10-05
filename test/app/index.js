@@ -5,13 +5,13 @@ const bodyParser = require('body-parser');
 const app = require('express')();
 const io = require('socket.io')();
 const routes = require('./routes');
-const { accessLog, httpErrors } = require('./middleware');
+const { middleware: { accessLog, httpErrors } } = require('../../src');
 
+app.use(cors());
 app.use(accessLog);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors());
 
 app.use(routes);
 

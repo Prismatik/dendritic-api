@@ -1,9 +1,8 @@
 const _ = require('lodash');
 const { Router } = require('express');
-const util = require('../utils/module');
+const { slurp } = require('../../../src');
 
-const routes = util.slurp('src/routes');
-
+const routes = slurp('test/app/routes');
 const router = module.exports = new Router();
 
 router.sockets = [];
