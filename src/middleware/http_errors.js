@@ -1,9 +1,5 @@
 const HttpError = require('standard-http-error');
-const {
-  thinky: {
-    Errors: { DocumentNotFound, ValidationError }
-  }
-} = require('../../config');
+const { DocumentNotFound, ValidationError } = require('thinky/lib/errors');
 
 module.exports = (err, req, res, next) => {
   if (err instanceof DocumentNotFound) {

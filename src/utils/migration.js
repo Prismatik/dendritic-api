@@ -2,9 +2,10 @@
 
 const _ = require('lodash');
 const os = require('os');
-const { thinky: { r } } = require('../../config');
 const Migration = require('../models/migration');
 const { slurp } = require('./module');
+
+const { thinky: { r } } = require(`${process.cwd()}/config`);
 
 const MUTEX_MIGRATION_NAME = 'migrations_running_mutex';
 

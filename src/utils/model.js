@@ -1,6 +1,7 @@
 const Ajv = require('ajv');
 const uuid = require('uuid');
-const { thinky, schema } = require('../../config');
+
+const { thinky, schema } = require(`${process.cwd()}/config`);
 
 /**
  * Creates a Thiky model based on a schema definition
