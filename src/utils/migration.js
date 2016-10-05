@@ -8,7 +8,8 @@ const { slurp } = require('./module');
 
 const MUTEX_MIGRATION_NAME = 'migrations_running_mutex';
 
-const migrationFiles = slurp('migrations');
+let migrationFiles = [];
+try { migrationFiles = slurp('migrations'); } catch (e) { console.log('no migrations found'); }
 const existingMigrations = Object.keys(migrationFiles).sort().map(name => {
   const { up, down } = migrationFiles[name];
   return { up, down, name: _.snakeCase(name) };
