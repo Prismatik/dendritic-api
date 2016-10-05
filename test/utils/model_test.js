@@ -7,7 +7,7 @@ describe('utils/model', function () {
   this.timeout(5000);
 
   describe('.create(modelName)', () => {
-    const TEST_JSON_SCHEMA = {
+    schema.thing = {
       type: 'object',
       name: 'thing',
       pluralName: 'things',
@@ -29,12 +29,7 @@ describe('utils/model', function () {
         'password'
       ]
     };
-    let Model;
-
-    before(() => {
-      schema.thing = TEST_JSON_SCHEMA;
-      Model = model.create('thing');
-    });
+    const Model = model.create('thing');
 
     it('should build a thinky class', () => {
       Model.must.equal(thinky.models.things);
@@ -57,7 +52,7 @@ describe('utils/model', function () {
   });
 
   describe('.create(modelName, {audit: true})', () => {
-    const TEST_JSON_SCHEMA = {
+    schema.auditableThing = {
       type: 'object',
       name: 'auditableThing',
       pluralName: 'auditableThings',
@@ -79,13 +74,8 @@ describe('utils/model', function () {
         'password'
       ]
     };
-    let Model;
+    const Model = model.create('auditableThing', { audit: true });
     const params = { email: 'blah@example.com', password: 'blah!' };
-
-    before(() => {
-      schema.auditableThing = TEST_JSON_SCHEMA;
-      Model = model.create('auditableThing', { audit: true });
-    });
 
     it('should populate the audit log', function *() {
       const record = yield new Model(params).save();
@@ -98,7 +88,7 @@ describe('utils/model', function () {
   });
 
   describe('update/replace data', () => {
-    const TEST_JSON_SCHEMA = {
+    schema.updThing = {
       type: 'object',
       name: 'updThing',
       pluralName: 'updThings',
@@ -119,28 +109,24 @@ describe('utils/model', function () {
       ]
     };
 
-    let Model;
+    const Model = model.create('updThing');
+
     let record;
     let hookCalls = [];
 
-    before(() => {
-      schema.updThing = TEST_JSON_SCHEMA;
-      Model = model.create('updThing');
+    Model.pre('save', next => {
+      hookCalls.push('pre save 1');
+      next();
+    });
 
-      Model.pre('save', next => {
-        hookCalls.push('pre save 1');
-        next();
-      });
+    Model.post('save', next => {
+      hookCalls.push('post save 1');
+      next();
+    });
 
-      Model.post('save', next => {
-        hookCalls.push('post save 1');
-        next();
-      });
-
-      Model.pre('validate', next => {
-        hookCalls.push('pre validate 1');
-        next();
-      });
+    Model.pre('validate', next => {
+      hookCalls.push('pre validate 1');
+      next();
     });
 
     beforeEach(function *() {
@@ -185,7 +171,7 @@ describe('utils/model', function () {
   });
 
   describe('model with a `rev`', () => {
-    const TEST_JSON_SCHEMA = {
+    schema.revThing = {
       type: 'object',
       name: 'revThing',
       pluralName: 'revThings',
@@ -207,14 +193,9 @@ describe('utils/model', function () {
         'name'
       ]
     };
-    let Model;
+    const Model = model.create('revThing');
     const params = { name: 'something' };
     const REV_RE = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
-
-    before(() => {
-      schema.revThing = TEST_JSON_SCHEMA;
-      Model = model.create('revThing');
-    });
 
     it('sets a new `rev` automatically for new records', function *() {
       const thing = yield new Model(Object.assign({ id: uuid.v4() }, params)).save();
@@ -264,7 +245,7 @@ describe('utils/model', function () {
   });
 
   describe('a model with createdAt/updatedAt properties', () => {
-    const TEST_JSON_SCHEMA = {
+    schema.timestampsThing = {
       type: 'object',
       name: 'timestampsThing',
       pluralName: 'timestampsThings',
@@ -289,15 +270,10 @@ describe('utils/model', function () {
         'name'
       ]
     };
-    let Model;
-    let now;
-    let record;
+    const Model = model.create('timestampsThing');
+    const now = new Date();
 
-    before(() => {
-      schema.timestampsThing = TEST_JSON_SCHEMA;
-      Model = model.create('timestampsThing');
-      now = new Date();
-    });
+    let record;
 
     beforeEach(function *() {
       record = yield new Model({ name: 'nikolay!' }).save();
